@@ -9,7 +9,33 @@ export interface TodoState {
 }
 
 const initialState: TodoState = {
-  list: [],
+  list: [
+    {
+      title: "Title 1",
+      deadline: new Date(),
+      status: "todo",
+    },
+    {
+      title: "Title 2",
+      deadline: new Date(),
+      status: "todo",
+    },
+    {
+      title: "Title 3",
+      deadline: new Date(),
+      status: "todo",
+    },
+    {
+      title: "Title 4",
+      deadline: new Date(),
+      status: "todo",
+    },
+    {
+      title: "Title 5",
+      deadline: new Date(),
+      status: "todo",
+    },
+  ],
   newTodo: null,
 };
 
