@@ -17,9 +17,18 @@ const todoSlice = createSlice({
   name: "todo",
   initialState,
   reducers: {
-    updateNewTitle: (state: TodoState, action: PayloadAction<string>) => {},
-    updateNewDeadline: (state: TodoState, action: PayloadAction<Date>) => {},
-    updateList: (state: TodoState, action: PayloadAction<Todo[]>) => {},
+    updateNewTitle: (state: TodoState, action: PayloadAction<string>) => {
+      if (state.newTodo != null) state.newTodo.title = action.payload;
+    },
+    updateNewDeadline: (state: TodoState, action: PayloadAction<Date>) => {
+      if (state.newTodo != null) state.newTodo.deadline = action.payload;
+    },
+    clearNewTodo: (state: TodoState) => {
+      state.newTodo = null;
+    },
+    updateList: (state: TodoState, action: PayloadAction<Todo[]>) => {
+      state.list = action.payload;
+    },
   },
 });
 
