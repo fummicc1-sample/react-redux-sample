@@ -1,11 +1,10 @@
-import { createSlice, PayloadAction, Selector } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppThunk, RootState } from "../../app/store";
 import { Todo } from "../../data/todo";
 
 export interface TodoState {
   list: Todo[];
-  newTodo: Todo | null;
+  newTodo: Todo;
 }
 
 const initialState: TodoState = {
@@ -36,7 +35,11 @@ const initialState: TodoState = {
       status: "todo",
     },
   ],
-  newTodo: null,
+  newTodo: {
+    title: "",
+    deadline: new Date(),
+    status: "todo",
+  },
 };
 
 const todoSlice = createSlice({
@@ -44,23 +47,45 @@ const todoSlice = createSlice({
   initialState,
   reducers: {
     updateNewTitle: (state: TodoState, action: PayloadAction<string>) => {
-      if (state.newTodo != null) state.newTodo.title = action.payload;
+      console.log(action.payload);
+      state.newTodo.title = action.payload;
     },
     updateNewDeadline: (state: TodoState, action: PayloadAction<Date>) => {
-      if (state.newTodo != null) state.newTodo.deadline = action.payload;
+      state.newTodo.deadline = action.payload;
     },
     clearNewTodo: (state: TodoState) => {
-      state.newTodo = null;
+      state.newTodo.title = "";
+      state.newTodo.deadline = new Date();
+      state.newTodo.status = "todo";
     },
-    updateList: (state: TodoState, action: PayloadAction<Todo[]>) => {
-      state.list = action.payload;
+    appendNewTodo: (state: TodoState) => {
+      state.list.push(state.newTodo);
+      state.newTodo.title = "";
+      state.newTodo.deadline = new Date();
+      state.newTodo.status = "todo";
     },
   },
 });
 
-export const { updateNewTitle, updateNewDeadline, updateList } =
-  todoSlice.actions;
+export const createNewTodo = (): AppThunk => (dispatch, getState) => {
+  getState();
+  console.log("Test");
+  dispatch(appendNewTodo);
+  console.log("Test appendNewTodo pass");
+  getState();
+  console.log("Test getState pass");
+  dispatch(clearNewTodo);
+  console.log("Test clearNewTodo pass");
+};
+
+export const {
+  updateNewTitle,
+  updateNewDeadline,
+  appendNewTodo,
+  clearNewTodo,
+} = todoSlice.actions;
 
 export const selectTodoList = (state: RootState) => state.todo.list;
+export const selectNewTodo = (state: RootState) => state.todo.newTodo;
 
 export default todoSlice.reducer;
