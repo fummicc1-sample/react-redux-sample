@@ -9,19 +9,27 @@ import {
 import { makeStyles } from "@mui/styles";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Todo } from "../../data/todo";
-import {
-  createNewTodo,
-  selectTodoList,
-  updateNewTitle,
-  selectNewTodo,
-} from "./todoSlice";
+import { appendNewTodo, selectTodoState, updateNewTitle } from "./todoSlice";
 import { Box } from "@mui/system";
 import { GoNote } from "react-icons/go";
 
+const useStyle = makeStyles(() => ({
+  card: {
+    backgroundColor: "#F8A602",
+    borderRadius: 12,
+    color: "black",
+  },
+  button: {
+    backgroundColor: "#F8A602",
+    color: "black",
+  },
+}));
+
 export const TodoPage = () => {
-  const todos = useAppSelector(selectTodoList);
-  const newTodo = useAppSelector(selectNewTodo);
-  const todoDomList = todos.map((todo: Todo, index: number) => (
+  const style = useStyle();
+  const state = useAppSelector(selectTodoState);
+  const newTodo = state.newTodo;
+  const todoDomList = state.list.map((todo: Todo, index: number) => (
     <div>
       <TodoItem
         id={todo.id}
@@ -51,19 +59,20 @@ export const TodoPage = () => {
               <TextField
                 id="outlined-basic"
                 variant="outlined"
-                onChange={() => dispatch(updateNewTitle)}
+                onChange={(event) =>
+                  dispatch(updateNewTitle(event.target.value))
+                }
               >
                 {newTodo.title}
               </TextField>
             </Grid>
             <Grid item>
               <Button
+                className={style.button}
                 variant="contained"
                 endIcon={<GoNote />}
                 onClick={() => {
-                  console.log("OnClick");
-                  dispatch(createNewTodo);
-                  console.log("Completed");
+                  dispatch(appendNewTodo());
                 }}
               >
                 Add
@@ -76,18 +85,10 @@ export const TodoPage = () => {
   );
 };
 
-const useTodoStyles = makeStyles(() => ({
-  root: {
-    backgroundColor: "#F8A602",
-    borderRadius: 12,
-    color: "black",
-  },
-}));
-
 const TodoItem = (props: Todo) => {
-  const style = useTodoStyles();
+  const style = useStyle();
   return (
-    <div className={style.root}>
+    <div className={style.card}>
       <ListItemButton>
         <ListItemText primary={props.title}></ListItemText>
       </ListItemButton>

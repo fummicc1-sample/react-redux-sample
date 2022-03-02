@@ -53,7 +53,6 @@ export const todoSlice = createSlice({
   initialState,
   reducers: {
     updateNewTitle: (state: TodoState, action: PayloadAction<string>) => {
-      console.log(action.payload);
       state.newTodo.title = action.payload;
     },
     updateNewDeadline: (state: TodoState, action: PayloadAction<Date>) => {
@@ -66,24 +65,11 @@ export const todoSlice = createSlice({
       state.newTodo.status = "todo";
     },
     appendNewTodo: (state: TodoState) => {
+      state.newTodo.id = state.list.length;
       state.list.push(state.newTodo);
-      state.newTodo.title = "";
-      state.newTodo.deadline = new Date("2022-03-01T12:00:00Z");
-      state.newTodo.status = "todo";
     },
   },
 });
-
-export const createNewTodo = (): AppThunk => (dispatch, getState) => {
-  getState();
-  console.log("Test");
-  dispatch(appendNewTodo);
-  console.log("Test appendNewTodo pass");
-  getState();
-  console.log("Test getState pass");
-  dispatch(clearNewTodo);
-  console.log("Test clearNewTodo pass");
-};
 
 export const {
   updateNewTitle,
@@ -92,7 +78,6 @@ export const {
   clearNewTodo,
 } = todoSlice.actions;
 
-export const selectTodoList = (state: RootState) => state.todo.list;
-export const selectNewTodo = (state: RootState) => state.todo.newTodo;
+export const selectTodoState = (state: RootState) => state.todo;
 
 export default todoSlice.reducer;
